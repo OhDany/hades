@@ -4,9 +4,9 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView
-from core.erp.models import Category
 
-from core.erp.form import CategoryForm
+from core.erp.forms import CategoryForm
+from core.erp.models import Category
 
 
 def category_list(request):
@@ -31,12 +31,14 @@ class CategoryListView(ListView):
             data = Category.objects.get(pk=request.POST['id']).toJSON()
         except Exception as e:
             data['error'] = str(e)
-
         return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de categorias'
+        context['create_url'] = reverse_lazy('erp:category_create')
+        context['list_url'] = reverse_lazy('erp:category_list')
+        context['entity'] = 'Categorias'
         return context
 
 
@@ -49,4 +51,6 @@ class CategoryCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Crear nueva categoria'
+        context['entity'] = 'Categorias'
+        context['list_url'] = reverse_lazy('erp:category_list')
         return context
