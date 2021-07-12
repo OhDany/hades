@@ -3,8 +3,11 @@
    <div class="card card-default">
       <div class="card-header">
          <h3 class="card-title">
+            {% if action == 'add' %}
             <i class="fas fa-plus"></i>
-            {{ title }}
+            {% else %}
+            <i class="fas fa-edit"></i>
+            {% endif %} {{ title }}
          </h3>
       </div>
       <div class="card-body">
