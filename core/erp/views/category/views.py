@@ -8,15 +8,6 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from core.erp.forms import CategoryForm
 from core.erp.models import Category
 
-
-def category_list(request):
-    data = {
-        'title': 'Listado de categorias',
-        'categories': Category.objects.all()
-    }
-    return render(request, 'category/list.html', data)
-
-
 class CategoryListView(ListView):
     model = Category
     template_name = 'category/list.html'
@@ -28,10 +19,16 @@ class CategoryListView(ListView):
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            data = Category.objects.get(pk=request.POST['id']).toJSON()
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Category.objects.all():
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
         except Exception as e:
             data['error'] = str(e)
-        return JsonResponse(data)
+        return JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
